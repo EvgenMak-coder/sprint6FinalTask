@@ -15,7 +15,7 @@ type Server struct {
 }
 
 // New создает и настраивает новый экземпляр сервера
-func NewServ(logger *log.Logger) *Server {
+func NewServer(logger *log.Logger) *Server {
 	router := createRouter()
 
 	return &Server{
@@ -35,8 +35,8 @@ func NewServ(logger *log.Logger) *Server {
 func createRouter() *http.ServeMux {
 	router := http.NewServeMux()
 
-	router.HandleFunc("/", handlers.HandlerRoot)
-	router.HandleFunc("/upload", handlers.UploadHandler)
+	router.HandleFunc("GET /", handlers.HandlerRoot)
+	router.HandleFunc("POST /upload", handlers.UploadHandler)
 
 	return router
 }
@@ -45,10 +45,4 @@ func createRouter() *http.ServeMux {
 func (s *Server) Start() error {
 	s.logger.Printf("Starting server on %s", s.srv.Addr)
 	return s.srv.ListenAndServe()
-}
-
-// Shutdown корректно останавливает сервер
-func (s *Server) Shutdown() error {
-	s.logger.Print("Shutting down server")
-	return s.srv.Close()
 }

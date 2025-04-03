@@ -15,11 +15,8 @@ import (
 
 func HandlerRoot(w http.ResponseWriter, r *http.Request) {
 
-	if r.URL.Path != "/" {
-		http.NotFound(w, r)
-		return
-	}
 	filePath := filepath.Join("..", "index.html")
+
 	// Читаем содержимое HTML-файла
 	content, err := os.ReadFile(filePath)
 	if err != nil {
@@ -30,14 +27,12 @@ func HandlerRoot(w http.ResponseWriter, r *http.Request) {
 
 	// Устанавливаем заголовок Content-Type и отправляем содержимое
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.Write(content)
+	_, err = w.Write(content)
+	if err != nil {
+		log.Printf("Ошибка при записи в файл: %v", err)
+	}
 }
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
-	// Проверяем метод запроса
-	if r.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
 
 	// Парсинг multipart-формы
 	if err := r.ParseForm(); err != nil {
@@ -61,7 +56,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Конвертация через сервис
-	convertedData := service.IsMorse(string(fileBytes))
+	convertedData := service.Encode(string(fileBytes))
 
 	// Генерация уникального имени файла
 	timestamp := time.Now().UTC().Format("20060102-150405")
@@ -80,5 +75,8 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Отправка результата клиенту
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-	w.Write([]byte(convertedData))
+	_, err = w.Write([]byte(convertedData))
+	if err != nil {
+		log.Printf("Ошибка при записи в файл: %v", err)
+	}
 }

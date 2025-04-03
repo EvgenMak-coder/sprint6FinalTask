@@ -1,26 +1,29 @@
 package service
 
 import (
+	"strings"
+	"unicode"
+
 	"github.com/Yandex-Practicum/go1fl-sprint6-final/pkg/morse"
 )
 
-func IsMorse(text string) string {
-	var isMorse bool
+func Encode(text string) string {
+
+	var str morse.ErrNoEncoding
+
 	if text == "" {
-		return "пустая строка"
-	}
-	for _, r := range text {
-		if r == ' ' || r == '-' || r == '.' {
-			isMorse = true
-		} else {
-			isMorse = false
-		}
-
+		str.Text = text
+		return str.Error()
 	}
 
-	if isMorse {
+	containsProhibited := strings.ContainsFunc(text, func(r rune) bool {
+		return !(unicode.IsLetter(r) || unicode.IsNumber(r)) && (r == ' ' || r == '-' || r == '.')
+	})
+
+	if containsProhibited {
 		if morse.ToText(text) == "" {
-			return "Невозможно расшифровать код Морзе"
+			str.Text = text
+			return str.Error()
 		} else {
 			return morse.ToText(text)
 		}

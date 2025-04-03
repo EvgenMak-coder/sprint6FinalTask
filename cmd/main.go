@@ -10,7 +10,7 @@ import (
 func main() {
 
 	logger := log.New(os.Stdout, "SERVER: ", log.LstdFlags|log.Lshortfile)
-	srv := server.NewServ(logger)
+	srv := server.NewServer(logger)
 
 	if err := srv.Start(); err != nil {
 		logger.Fatalf("Server failed: %v", err)
