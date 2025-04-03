@@ -37,7 +37,6 @@ func createRouter() *http.ServeMux {
 
 	router.HandleFunc("GET /", handlers.HandlerRoot)
 	router.HandleFunc("POST /upload", handlers.UploadHandler)
-
 	return router
 }
 

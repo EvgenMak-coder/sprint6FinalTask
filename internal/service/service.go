@@ -15,7 +15,6 @@ func Encode(text string) string {
 		str.Text = text
 		return str.Error()
 	}
-
 	containsProhibited := strings.ContainsFunc(text, func(r rune) bool {
 		return !(unicode.IsLetter(r) || unicode.IsNumber(r)) && (r == ' ' || r == '-' || r == '.')
 	})
